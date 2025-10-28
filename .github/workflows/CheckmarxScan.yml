@@ -1,0 +1,39 @@
+name: Checkmarx Scan 
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  checkmarx_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkmarx AST Github Action
+        env:
+          CX_CLIENT_ID: ${{ secrets.CX_CLIENT_ID }}
+          CX_CLIENT_SECRET: ${{ secrets.CX_CLIENT_SECRET }}
+        uses: Checkmarx/ast-github-action@2.0.23
+        with:
+          # Provide the AST portal URL
+          base_uri: https://eu.ast.checkmarx.net/
+          # Provide the Tenant for AST portal URL
+          cx_tenant: devoteam_fr_nfr
+          # Select a Checkmarx Project Name
+          project_name: WalidProjectTest_v2
+          # Branch name
+          #branch: # optional, default is ${{ github.head_ref || github.ref }}
+          # GitHub API Token
+          #github_token: # optional, default is ${{ github.token }}
+          # Additional parameters for AST scan
+          additional_params: --file-filter !.git/** --file-filter !node_modules/** --scan-types sast,sca
+          # Repository name for PR decoration
+          #repo_name: # optional, default is ${{ github.event.repository.name }}
+          # Organization name to create the Pr comment
+          #namespace: # optional, default is ${{ github.repository_owner }}
+          # Pr Number of the pull request that needs the decoration
+          #pr_number: # optional, default is ${{ github.event.number }}
+
+      
